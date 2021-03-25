@@ -30,7 +30,7 @@ var financeCtrl = (function (){
     var Income = function(id,description,value){
         this.id = id;
         this.description = description;
-        this.value = valuel
+        this.value = value
     };
 
     var Expense =function(id,description,value){
@@ -48,27 +48,49 @@ var financeCtrl = (function (){
             exp: 0
         }
     };
+    return{
+        addItem: function(type,description,value){
+           var item,id;
+            
+           if(data.allItems[type].length === 0)id =1;
+           else {
+              id=  data.allItems[type][data.allItems[type].length -1 ].id +1;
+           }
+
+           if(type ==='inc'){
+            item = new Income(id,description,value);
+           } else{
+               item = new Expense(id,description,value)
+
+           }
+            data.allItems[type].push(item);
+
+
+
+
+        }
+    }
+
 })();
 
 var appCtrl = (function (uiC, fnC) {
-    var Dom = uiCtrl.getDomstr();
-  var crtlAddItem = function () {
+    var crtlAddItem = function () {
 
-    console.log(uiCtrl.getInput());
-
+    var inp = uiCtrl.getInput();
+    console.log(inp);
+        financeCtrl.addItem(inp.type,inp.description,inp.value);
 };
 var setupEventListeners= function(){
     
 var Dom = uiCtrl.getDomstr();
-  document.querySelector(Dom.addBtn).addEventListener("click", function () {
+  document.querySelector(Dom.addBtn).addEventListener('click', function () {
     // data insert
-
+    crtlAddItem();
     //save inserted data
     // display data
     // analyze
     //
   });
-
   document.addEventListener("keypress", function (event) {
     if (event.key === 13 || event.which === 13) {
       crtlAddItem();
