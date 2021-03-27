@@ -7,7 +7,11 @@ var uiCtrl = (function ()
         inpValue : ".add__value",
         addBtn : ".add__btn",
         incomeList : '.income__list',
-        expenseList : '.expenses__list'
+        expenseList : '.expenses__list',
+        tusuvLabel: ".budget__value",
+        incomeLabel: ".budget__income--value",
+        expeseLabel: ".budget__expenses--value",
+        percentageLabel: ".budget__expenses--percentage"
 
 
 
@@ -34,6 +38,19 @@ var uiCtrl = (function ()
             fieldsArr[0].focus();
 
         },
+        tusviigUzuuleh: function(tusuv){
+            document.querySelector(DOMstr.tusuvLabel).textContent = tusuv.tusuv;
+            if(tusuv.huvi !== 0){
+                document.querySelector(DOMstr.percentageLabel).textContent = tusuv.huvi+"%";}
+           else {
+                document.querySelector(DOMstr.percentageLabel).textContent = tusuv.huvi+"%";
+           }
+            document.querySelector(DOMstr.incomeLabel).textContent = tusuv.totalInc;
+            document.querySelector(DOMstr.expeseLabel).textContent = tusuv.totalExp;
+        
+
+
+        },
 
         addListItem: function(item,type){
             // inc or exp 
@@ -43,14 +60,14 @@ var uiCtrl = (function ()
                 html = '<div class="item clearfix" id="income-%id%"><div class="item__description">$Description$</div><div class="right clearfix"><div class="item__value">$value$</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div></div></div>';
 
             }else{
-                list = DOMstr.addBtn.expenseList;
+                list = DOMstr.expenseList;
                 html = ' <div class="item clearfix" id="expense-%id%"><div class="item__description">$Description$</div><div class="right clearfix"><div class="item__value">$value$</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
             html= html.replace('%id%',item.id);
             html = html.replace('$Description$',item.description);
             html = html.replace('$value$',item.value);
 
-            document.querySelector(list).insertAdjacentHTML('beforeend',html);
+            document.querySelector(list).insertAdjacentHTML("beforeend",html);
 
 
         }
@@ -131,8 +148,8 @@ var financeCtrl = (function (){
                 totalInc : data.totals.inc,
                 totalExp : data.totals.exp
 
-            };
 
+            };
         },
         seeData:function(){
             return data;
@@ -157,6 +174,8 @@ var appCtrl = (function (uiC, fnC) {
      financeCtrl.Analyze();
 
     var tusuv =  financeCtrl.Display();
+
+    uiCtrl.tusviigUzuuleh(tusuv);
     console.log(tusuv);
 
 
@@ -182,7 +201,14 @@ var Dom = uiCtrl.getDomstr();
 };
 return {
     init: function(){
+
         console.log("App started ...");
+        uiCtrl.tusviigUzuuleh({
+            tusuv:0,
+            huvi:0,
+            totalInc:0,
+            totalExp:0
+        });
         setupEventListeners();
     }
 };
