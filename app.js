@@ -11,7 +11,8 @@ var uiCtrl = (function ()
         tusuvLabel: ".budget__value",
         incomeLabel: ".budget__income--value",
         expeseLabel: ".budget__expenses--value",
-        percentageLabel: ".budget__expenses--percentage"
+        percentageLabel: ".budget__expenses--percentage",
+        containerDiv: ".container"
 
 
 
@@ -51,17 +52,22 @@ var uiCtrl = (function ()
 
 
         },
+        deleteListItem: function(id){
+            var el = document.getElementById(id);
+            el.parentNode.removeChild(el);
 
+
+        },
         addListItem: function(item,type){
             // inc or exp 
             var html,list;
             if(type ==='inc'){
                 list = DOMstr.incomeList;
-                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">$Description$</div><div class="right clearfix"><div class="item__value">$value$</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div></div></div>';
+                html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">$Description$</div><div class="right clearfix"><div class="item__value">$value$</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div></div></div>';
 
             }else{
                 list = DOMstr.expenseList;
-                html = ' <div class="item clearfix" id="expense-%id%"><div class="item__description">$Description$</div><div class="right clearfix"><div class="item__value">$value$</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = ' <div class="item clearfix" id="exp-%id%"><div class="item__description">$Description$</div><div class="right clearfix"><div class="item__value">$value$</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
             html= html.replace('%id%',item.id);
             html = html.replace('$Description$',item.description);
@@ -153,6 +159,18 @@ var financeCtrl = (function (){
         },
         seeData:function(){
             return data;
+        },
+        deleteItem :function(type, id,){
+            var ids = data.allItems[type].map(function(el){
+                return el.id;
+            });
+
+            var index = ids.indexOf(id);
+            if(index !== -1){
+                data.allItems[type].splice(index,1);
+            }
+
+
         }
     };
 
@@ -195,6 +213,22 @@ var Dom = uiCtrl.getDomstr();
   document.addEventListener("keypress", function (event) {
     if (event.key === 13 || event.which === 13) {
       crtlAddItem();
+    }
+  });
+
+  document.querySelector(Dom.containerDiv).addEventListener('click',function(event){
+    var id  = event.target.parentNode.parentNode.parentNode.parentNode.id;
+    
+    if(id){
+        var arr = id.split("-");
+        var type = arr[0];
+        var itemId =parseInt(arr[1]);
+
+        financeCtrl.deleteItem(type,itemId);
+
+
+        uiCtrl.deleteListItem(id);
+
     }
   });
 
